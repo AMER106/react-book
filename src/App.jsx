@@ -92,18 +92,38 @@
 //   );
 // }
 
+// export default function App() {
+//   console.log("App Render");
+
+//   const handleClick = () => {
+//     console.log("Function Executed");
+//   };
+
+//   console.log("Function Created");
+
+//   return (
+//     <>
+//       <button onClick={handleClick}>Click Me</button>
+//     </>
+//   );
+// }
+
+import { useRef } from "react";
+
 export default function App() {
-  console.log("App Render");
+  const inputRef = useRef(null);
 
-  const handleClick = () => {
-    console.log("Function Executed");
-  };
-
-  console.log("Function Created");
+  function handleClick() {
+    inputRef.current.focus();
+  }
 
   return (
     <>
-      <button onClick={handleClick}>Click Me</button>
+      <input ref={inputRef} />
+
+      <button onClick={handleClick}>
+        Focus Input
+      </button>
     </>
   );
 }
