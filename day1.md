@@ -3,7 +3,7 @@
 > Practical notes built from experiments, browser behavior, and
 > interview discussions.
 
-------------------------------------------------------------------------
+---
 
 # 1. Why Code Splitting?
 
@@ -11,7 +11,7 @@
 
 A normal React app may generate:
 
-``` text
+```text
 main.js (2 MB)
 ```
 
@@ -20,12 +20,12 @@ page.
 
 Problems:
 
--   Slow initial load
--   More JavaScript to parse
--   Slower Time To Interactive (TTI)
--   Poor Largest Contentful Paint (LCP)
+- Slow initial load
+- More JavaScript to parse
+- Slower Time To Interactive (TTI)
+- Poor Largest Contentful Paint (LCP)
 
-------------------------------------------------------------------------
+---
 
 # 2. What is Code Splitting?
 
@@ -36,7 +36,7 @@ into multiple smaller bundles (chunks).
 
 Example build output:
 
-``` text
+```text
 main.js
 dashboard.js
 settings.js
@@ -48,19 +48,19 @@ Code splitting happens at **build time**.
 
 The bundler (Vite/Webpack/Rollup) sees:
 
-``` js
-import("./Dashboard")
+```js
+import("./Dashboard");
 ```
 
 and creates a separate chunk.
 
-------------------------------------------------------------------------
+---
 
 # 3. What is Lazy Loading?
 
 Lazy loading means loading a chunk **only when it is needed**.
 
-``` jsx
+```jsx
 const Dashboard = lazy(() => import("./Dashboard"));
 ```
 
@@ -68,7 +68,7 @@ Dashboard is NOT downloaded on the initial page load.
 
 It downloads only when React tries to render it.
 
-------------------------------------------------------------------------
+---
 
 # 4. Runtime Flow
 
@@ -88,7 +88,7 @@ User clicks Dashboard
             ↓
     React renders Dashboard
 
-------------------------------------------------------------------------
+---
 
 # 5. Build Time vs Runtime
 
@@ -130,11 +130,11 @@ User clicks Dashboard
 
     Dashboard rendered
 
-------------------------------------------------------------------------
+---
 
 # 6. What does lazy() do?
 
-``` jsx
+```jsx
 const Dashboard = lazy(() => import("./Dashboard"));
 ```
 
@@ -142,7 +142,7 @@ React stores a way to load the component.
 
 It does NOT immediately download it.
 
-------------------------------------------------------------------------
+---
 
 # 7. What does import() return?
 
@@ -154,7 +154,7 @@ returns
 
 not the component.
 
-------------------------------------------------------------------------
+---
 
 # 8. Why Suspense?
 
@@ -162,9 +162,9 @@ React cannot render a pending Promise.
 
 So Suspense provides a fallback UI.
 
-``` jsx
+```jsx
 <Suspense fallback={<Loading />}>
-    <Dashboard />
+  <Dashboard />
 </Suspense>
 ```
 
@@ -184,7 +184,7 @@ Timeline:
 
     Dashboard rendered
 
-------------------------------------------------------------------------
+---
 
 # 9. Mental Model
 
@@ -204,7 +204,7 @@ Think of Suspense as:
 
 (Not actual implementation, but a useful mental model.)
 
-------------------------------------------------------------------------
+---
 
 # 10. Caching
 
@@ -228,7 +228,7 @@ Think of Suspense as:
 
     render immediately
 
-------------------------------------------------------------------------
+---
 
 # 11. Two Types of Cache
 
@@ -242,7 +242,7 @@ Prevents executing the module again.
 
 Future import() calls return the cached module.
 
-------------------------------------------------------------------------
+---
 
 # 12. Multiple Lazy Components
 
@@ -261,7 +261,7 @@ Both share the same Promise/module.
 
 Only one network request happens.
 
-------------------------------------------------------------------------
+---
 
 # 13. Practical Project
 
@@ -293,7 +293,7 @@ Wrapped Routes with
 
 Observed Network tab.
 
-------------------------------------------------------------------------
+---
 
 # 14. What We Verified
 
@@ -307,7 +307,7 @@ Observed Network tab.
 
 ✅ Second click uses cache
 
-------------------------------------------------------------------------
+---
 
 # 15. Next.js
 
@@ -327,7 +327,7 @@ Usually no need for React.lazy() on pages.
 
 Use dynamic() for heavy components inside a page.
 
-------------------------------------------------------------------------
+---
 
 # 16. Waterfall Problem
 
@@ -359,7 +359,7 @@ Better
 
 Avoid sequential waits.
 
-------------------------------------------------------------------------
+---
 
 # 17. Frequently Asked Questions
 
@@ -369,7 +369,7 @@ React triggers dynamic import().
 
 The browser downloads the chunk created by the bundler.
 
-------------------------------------------------------------------------
+---
 
 ## Q. Does code splitting happen first or lazy loading?
 
@@ -381,7 +381,7 @@ Lazy loading:
 
 Runtime.
 
-------------------------------------------------------------------------
+---
 
 ## Q. Does lazy loading happen every click?
 
@@ -391,7 +391,7 @@ Only the first time.
 
 Future renders use cached module.
 
-------------------------------------------------------------------------
+---
 
 ## Q. Who downloads the file?
 
@@ -401,13 +401,13 @@ React executes import().
 
 The bundler runtime knows where the chunk is located.
 
-------------------------------------------------------------------------
+---
 
 ## Q. Why do we need Suspense?
 
 Because lazy components return a pending Promise while downloading.
 
-------------------------------------------------------------------------
+---
 
 # 18. Interview Questions
 
@@ -415,13 +415,13 @@ Because lazy components return a pending Promise while downloading.
 
 Breaking a large JS bundle into smaller chunks.
 
-------------------------------------------------------------------------
+---
 
 ### What is lazy loading?
 
 Loading chunks only when needed.
 
-------------------------------------------------------------------------
+---
 
 ### Difference?
 
@@ -429,19 +429,19 @@ Code splitting creates chunks.
 
 Lazy loading decides when to load them.
 
-------------------------------------------------------------------------
+---
 
 ### Why Suspense?
 
 Shows fallback while lazy component is loading.
 
-------------------------------------------------------------------------
+---
 
 ### What does import() return?
 
 Promise.
 
-------------------------------------------------------------------------
+---
 
 ### Does React.lazy() create chunks?
 
@@ -451,7 +451,7 @@ The bundler creates chunks.
 
 React.lazy() uses dynamic import() to load them.
 
-------------------------------------------------------------------------
+---
 
 ### What happens on second navigation?
 
@@ -459,7 +459,7 @@ Browser + ES module cache are used.
 
 No additional download.
 
-------------------------------------------------------------------------
+---
 
 # 19. Self Test
 
@@ -483,7 +483,7 @@ No additional download.
 
 10. Explain the entire lifecycle from click to render.
 
-------------------------------------------------------------------------
+---
 
 # 20. One-Line Summary
 
@@ -525,7 +525,7 @@ No additional download.
 
     Future renders are instant
 
-------------------------------------------------------------------------
+---
 
 # Final Interview Answer
 

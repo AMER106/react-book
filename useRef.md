@@ -342,3 +342,384 @@ Use useRef for values that React doesn't need to render.
 - Previous values
 - Mutable values
 - Avoid unnecessary re-renders
+
+# React Notes - useRef
+
+## What is useRef?
+
+`useRef` is a React Hook that lets you store a mutable value that persists across renders **without causing a re-render**.
+
+```jsx
+const ref = useRef(initialValue);
+```
+
+Access value
+
+```jsx
+ref.current;
+```
+
+Update value
+
+```jsx
+ref.current = newValue;
+```
+
+---
+
+# Key Characteristics
+
+- Persists across renders
+- Does NOT trigger re-render
+- Stores mutable values
+- Can reference DOM elements
+
+---
+
+# useState vs useRef
+
+| useState             | useRef                       |
+| -------------------- | ---------------------------- |
+| Triggers re-render   | No re-render                 |
+| Stores UI state      | Stores mutable/non-UI values |
+| Uses setter          | Uses `.current`              |
+| React tracks updates | React ignores updates        |
+
+---
+
+# Golden Rule
+
+If changing the value should update the UI
+
+→ useState
+
+If changing the value should NOT update the UI
+
+→ useRef
+
+---
+
+# Example
+
+```jsx
+const countRef = useRef(0);
+
+function increment() {
+  countRef.current++;
+}
+```
+
+Value changes
+
+React does NOT re-render.
+
+---
+
+# Why UI doesn't update?
+
+Changing
+
+```jsx
+ref.current = ...
+```
+
+does not notify React.
+
+React only re-renders when
+
+- State changes
+- Props change
+- Parent re-renders
+
+---
+
+# DOM References
+
+```jsx
+const inputRef = useRef(null);
+
+<input ref={inputRef} />;
+```
+
+After React commits the DOM
+
+```jsx
+inputRef.current;
+```
+
+contains
+
+```
+HTMLInputElement
+```
+
+---
+
+# Focus Example
+
+```jsx
+const inputRef = useRef(null);
+
+function focusInput() {
+  inputRef.current.focus();
+}
+```
+
+Result
+
+- Cursor moves into input
+- No component re-render
+
+Reason
+
+`focus()` is a Browser DOM API.
+
+---
+
+# Render Timeline
+
+Render starts
+
+↓
+
+useRef(null)
+
+↓
+
+current = null
+
+↓
+
+Return JSX
+
+↓
+
+React commits DOM
+
+↓
+
+React attaches refs
+
+↓
+
+current = HTMLInputElement
+
+↓
+
+useEffect runs
+
+---
+
+# Reading ref.current
+
+During render
+
+```jsx
+console.log(inputRef.current);
+```
+
+Output
+
+```
+null
+```
+
+Inside useEffect
+
+```jsx
+useEffect(() => {
+  console.log(inputRef.current);
+}, []);
+```
+
+Output
+
+```
+HTMLInputElement
+```
+
+Reason
+
+Refs are attached before useEffect executes.
+
+---
+
+# Storing Previous Value
+
+```jsx
+const previous = useRef();
+
+useEffect(() => {
+  previous.current = count;
+}, [count]);
+```
+
+Why does it work?
+
+- Render happens first
+- UI displays previous value
+- After render, useEffect updates the ref
+- Ref update does not trigger another render
+
+---
+
+# Why not update ref during render?
+
+Wrong
+
+```jsx
+previous.current = count;
+```
+
+Reason
+
+The previous value gets overwritten before React renders.
+
+Always update previous values inside useEffect.
+
+---
+
+# Timer Example
+
+```jsx
+const intervalRef = useRef(null);
+
+intervalRef.current = setInterval(...);
+
+clearInterval(intervalRef.current);
+```
+
+Reason
+
+Timer ID is not part of the UI.
+
+No need for re-render.
+
+---
+
+# Local Variable vs useRef
+
+Wrong
+
+```jsx
+let intervalId = null;
+```
+
+Reason
+
+Local variables are recreated on every render.
+
+Correct
+
+```jsx
+const intervalRef = useRef(null);
+```
+
+Reason
+
+Refs persist across renders.
+
+---
+
+# Common use cases
+
+- DOM elements
+- Input focus
+- Timer IDs
+- Interval IDs
+- Previous values
+- WebSocket connections
+- AbortController
+- Mutable values
+
+---
+
+# React World vs Browser World
+
+React World
+
+- State
+- Props
+- Rendering
+
+Changes here
+
+↓
+
+React re-renders.
+
+Browser World
+
+- focus()
+- play()
+- pause()
+- scrollIntoView()
+- select()
+
+These manipulate the DOM directly.
+
+They do NOT trigger React re-renders.
+
+---
+
+# Interview Questions
+
+## Does updating ref.current trigger a re-render?
+
+No.
+
+---
+
+## Why use useRef instead of a normal variable?
+
+Because local variables are recreated on every render, while useRef persists across renders.
+
+---
+
+## Why store interval IDs in useRef?
+
+Because interval IDs don't affect the UI, so storing them in state would cause unnecessary re-renders.
+
+---
+
+## Can useRef replace useState?
+
+No.
+
+useState is for UI state.
+
+useRef is for mutable values that React doesn't need to render.
+
+---
+
+# Mental Model
+
+useState
+
+State changes
+
+↓
+
+React re-renders
+
+↓
+
+UI updates
+
+---
+
+useRef
+
+Value changes
+
+↓
+
+No re-render
+
+↓
+
+Value is preserved
+
+↓
+
+UI stays the same unless something else causes a render.
