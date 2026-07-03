@@ -468,3 +468,93 @@ Calculate again
 ↓
 
 Update cache
+
+************\*\*\*\*************MENTAL MODEL**************\*\***************
+
+Ek final mental map bana le:
+
+Parent Re-render
+│
+▼
+Child bhi re-render hoga (default)
+
+        │
+        ▼
+
+React.memo
+
+        │
+        ▼
+
+Props compare (Object.is)
+
+        │
+        ├── Props same
+        │       │
+        │       ▼
+        │   Skip Child Render ✅
+        │
+        └── Props changed
+                │
+                ▼
+          Child Re-render
+
+Ab props agar function hai
+
+Inline Function
+
+↓
+
+New Reference
+
+↓
+
+React.memo
+
+↓
+
+Props changed
+
+↓
+
+Child Render
+
+Isliye
+
+useCallback
+
+↓
+
+Same Function Reference
+
+↓
+
+React.memo
+
+↓
+
+Props Same
+
+↓
+
+Skip Child Render
+
+Aur value ke liye
+
+Expensive Calculation
+
+↓
+
+useMemo
+
+↓
+
+Cached Value
+
+↓
+
+Dependency Same
+
+↓
+
+No Recalculation
