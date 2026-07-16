@@ -108,22 +108,38 @@
 //   );
 // }
 
-import { useRef } from "react";
+// import { useRef } from "react";
 
-export default function App() {
-  const inputRef = useRef(null);
+// export default function App() {
+//   const inputRef = useRef(null);
 
-  function handleClick() {
-    inputRef.current.focus();
-  }
+//   function handleClick() {
+//     inputRef.current.focus();
+//   }
+
+//   return (
+//     <>
+//       <input ref={inputRef} />
+
+//       <button onClick={handleClick}>
+//         Focus Input
+//       </button>
+//     </>
+//   );
+// }
+
+import { BrowserRouter, Route ,Routes} from "react-router-dom";
+import useToggle from "./useToggle";
+import ProductsPage from "./pages/ProductsPage";
+export default function App(){
 
   return (
     <>
-      <input ref={inputRef} />
-
-      <button onClick={handleClick}>
-        Focus Input
-      </button>
+  <BrowserRouter>
+  <Routes>
+    <Route path="/" element={< ProductsPage/>} />
+  </Routes>
+  </BrowserRouter>
     </>
   );
 }
